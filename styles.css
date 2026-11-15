@@ -1,0 +1,158 @@
+/* iamevandrake.com
+   Paper, ink, a landscape and a sun.
+   Two layouts share this file:
+   - flow  (default: no JS, small screens, reduced motion): sections scroll normally
+   - depth (body.depth): sections stand one behind another and scrolling walks you through them */
+
+:root {
+  --bg: #f4efe6;
+  --ink: #1d1b18;
+  --soft: rgba(29, 27, 24, .64);
+  --line: rgba(29, 27, 24, .18);
+  --clay: #a4502b;
+  --sun: #e2aa78;
+  --serif: "Cormorant Garamond", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(21px, 2.1vw, 25px);
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.js body { opacity: 0; transition: opacity 1.6s ease; }
+.js body.ready { opacity: 1; }
+
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--line); text-underline-offset: .22em; transition: text-decoration-color .3s, color .3s; }
+a:hover { color: var(--clay); text-decoration-color: var(--clay); }
+:focus-visible { outline: 1px solid var(--ink); outline-offset: 6px; }
+section:focus { outline: none; }
+
+.skip-link { position: fixed; left: 16px; top: -80px; z-index: 50; background: var(--ink); color: var(--bg); padding: 10px 16px; font: 500 13px/1 var(--sans); text-decoration: none; }
+.skip-link:focus { top: 16px; color: var(--bg); }
+
+/* ---------- sky, sun, land ---------- */
+#sky, #land, #motes { position: fixed; inset: 0; pointer-events: none; }
+#sky { z-index: 0; }
+#sun {
+  position: absolute; left: 0; top: 0; width: 17vmin; height: 17vmin; margin: -8.5vmin;
+  border-radius: 50%; background: var(--sun);
+  box-shadow: 0 0 11vmin 4vmin color-mix(in srgb, var(--sun) 34%, transparent);
+  transform: translate(20vw, 50vh); opacity: .6;
+}
+#moon { /* a crescent, lit from the side the sun is setting on */
+  position: absolute; left: 0; top: 0; width: 11vmin; height: 11vmin; margin: -5.5vmin;
+  border-radius: 50%;
+  box-shadow: inset -2.5vmin 0 0 0 #fffdf7;
+  filter: drop-shadow(0 0 2.4vmin rgba(255, 253, 247, .95)) drop-shadow(0 0 .3vmin rgba(120, 104, 86, .35));
+  transform: translate(80vw, 19vh) rotate(150deg);
+}
+#land { z-index: 1; top: auto; height: 46vh; }
+#land svg { position: absolute; left: -6%; bottom: 0; width: 112%; height: 100%; transform-origin: 50% 100%; will-change: transform; }
+#motes { z-index: 2; width: 100%; height: 100%; }
+body:not(.depth) #land { opacity: .7; }
+
+/* ---------- header ---------- */
+.top {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
+  padding: 24px clamp(20px, 3.4vw, 44px) 30px;
+  background: linear-gradient(var(--bg) 30%, transparent);
+}
+.top .name { font-size: 24px; font-weight: 500; letter-spacing: .01em; text-decoration: none; white-space: nowrap; }
+.top nav { display: flex; gap: clamp(14px, 2vw, 30px); overflow-x: auto; scrollbar-width: none; }
+.top nav::-webkit-scrollbar { display: none; }
+.top nav a {
+  font: 400 13px/1.6 var(--sans); letter-spacing: .04em; color: var(--soft);
+  text-decoration: none; white-space: nowrap; padding: 4px 0; border-bottom: 1px solid transparent;
+}
+.top nav a:hover, .top nav a.here { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* ---------- sections: flow layout ---------- */
+#stage { position: relative; z-index: 3; }
+section {
+  min-height: 100vh; min-height: 100svh;
+  display: grid; place-items: center;
+  padding: 17vh clamp(22px, 6vw, 80px) 30vh;
+}
+.inner { width: 100%; max-width: 760px; text-align: center; }
+.js body:not(.depth) section .inner { opacity: 0; transform: translateY(28px); transition: opacity 1.4s ease, transform 1.4s cubic-bezier(.2, .7, .2, 1); }
+.js body:not(.depth) section.seen .inner { opacity: 1; transform: none; }
+
+.label { max-width: none; margin: 0 0 1.9em; font: 400 12px/1.4 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--soft); }
+h1, h2 { margin: 0; font-weight: 300; letter-spacing: -.015em; text-wrap: balance; }
+h1 { font-size: clamp(64px, 12.5vw, 168px); line-height: .95; margin-bottom: .22em; }
+h2 { font-size: clamp(38px, 5.6vw, 68px); line-height: 1.06; margin-bottom: .6em; }
+h2 em { font-weight: 300; }
+p { margin: 0 auto 1em; max-width: 31em; text-wrap: pretty; }
+.lead { font-size: 1.24em; line-height: 1.35; }
+.verse { font-size: 1.22em; font-style: italic; font-weight: 300; line-height: 1.5; max-width: none; margin-bottom: 1.5em; }
+.fine { margin-top: 2.2em; font: 400 12px/1.4 var(--sans); letter-spacing: .08em; color: var(--soft); }
+
+.go { display: inline-block; margin-top: .5em; font: 500 13px/1.6 var(--sans); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; padding-bottom: 5px; border-bottom: 1px solid var(--ink); }
+.go span { display: inline-block; margin-left: .4em; transition: transform .4s cubic-bezier(.2, .7, .2, 1); }
+.go:hover { border-bottom-color: var(--clay); }
+.go:hover span { transform: translateX(6px); }
+.go.down:hover span { transform: translateY(5px); }
+
+.list { list-style: none; margin: 0 auto 1.4em; padding: 0; max-width: 600px; text-align: left; border-bottom: 1px solid var(--line); }
+.list a { display: block; padding: .72em 0 .78em; border-top: 1px solid var(--line); text-decoration: none; transition: padding .4s cubic-bezier(.2, .7, .2, 1), color .3s; }
+.list a:hover { padding-left: 14px; }
+.list b { display: block; font-size: 1.2em; font-weight: 500; line-height: 1.2; }
+.list span { display: block; color: var(--soft); font-size: .92em; line-height: 1.38; margin-top: .15em; }
+.list a:hover span { color: inherit; }
+
+.elsewhere { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 28px; margin: 0; padding: 0; }
+.elsewhere a { font: 400 14px/2 var(--sans); letter-spacing: .04em; }
+
+/* next-section links and paired links */
+.onward { margin-top: 2.4em; margin-bottom: 0; }
+.onward a { font: 400 12px/1.6 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--soft); text-decoration: none; padding: 8px 0; }
+.onward a:hover { color: var(--ink); }
+.onward span { display: inline-block; margin-left: .5em; transition: transform .4s cubic-bezier(.2, .7, .2, 1); }
+.onward a:hover span { transform: translateY(5px); }
+.onward a[href="#home"]:hover span { transform: translateY(-5px); }
+.pair { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 36px; }
+
+@media (max-width: 640px) {
+  .top { flex-direction: column; gap: 6px; padding-top: 18px; }
+  .top .name { font-size: 22px; }
+  section { padding-top: 21vh; }
+  #home .verse br { display: none; }
+  .top nav { gap: 0 14px; max-width: 100%; flex-wrap: wrap; overflow: visible; }
+  .top nav a { font-size: 12px; letter-spacing: .02em; }
+}
+
+/* =====================================================================
+   DEPTH: sections stand in space and scrolling moves you forward
+   ===================================================================== */
+html.depth-on { scroll-snap-type: y proximity; }
+#track { display: none; }
+.depth #track { display: block; }
+#track i { display: block; height: 100vh; height: 100svh; scroll-snap-align: start; }
+
+.depth #stage { position: fixed; inset: 0; perspective: 1000px; perspective-origin: 50% 44%; overflow: hidden; }
+.depth #scene {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .9s cubic-bezier(.2, .7, .2, 1);
+}
+.depth section {
+  position: absolute; inset: 0; min-height: 0;
+  padding: 11vh 6vw 31vh;
+  will-change: transform, opacity; backface-visibility: hidden;
+}
+.depth .inner { transform: scale(var(--fit, 1)); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  .js body:not(.depth) section .inner { opacity: 1; transform: none; }
+}
